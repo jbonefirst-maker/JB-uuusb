@@ -143,40 +143,50 @@ button{
 }
 
 /* ======================= */
-/* POPUP BESAR (NAIK SEDIKIT) */
+/* MODAL */
 /* ======================= */
-#popupBox{
+#overlay{
     position:fixed;
-    top:80px; /* 🔥 ini yang diubah */
-    left:80px;
-    right:15px;
-    bottom:20px;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+    display:none; /* 🔥 default disembunyikan */
+    justify-content:center;
+    align-items:center;
+    z-index:100;
+}
+
+#popupBox{
     background:#111;
+    width:90%;
+    max-width:400px;
     border-radius:15px;
     padding:20px;
-    z-index:99;
-
-    overflow:auto;
-    box-shadow:0 0 15px rgba(0,0,0,0.7);
+    position:relative;
+    transform:scale(0.8);
+    opacity:0;
+    animation:fadeIn 0.3s forwards;
 }
 
-#popupBox h2{
-    margin-bottom:10px;
+@keyframes fadeIn{
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
 }
 
-#popupBox p{
-    color:#ccc;
-    line-height:1.5;
-}
-
-/* TOMBOL X */
-#popupBox .closePopup{
+.closePopup{
     position:absolute;
     top:10px;
     right:15px;
     font-size:20px;
     cursor:pointer;
 }
+
+#popupBox h2{margin-bottom:10px;}
+#popupBox p{color:#ccc;}
 </style>
 
 </head>
@@ -228,11 +238,18 @@ button{
 </div>
 </div>
 
-<!-- 🔥 POPUP BESAR -->
-<div id="popupBox">
-    <span class="closePopup" onclick="tutupPopup()">✖</span>
-    <h2>Pengumuman</h2>
-    <p>Ini isi pengalaman atau pengumuman kamu</p>
+<!-- 🔥 MODAL -->
+<div id="overlay">
+    <div id="popupBox">
+        <span class="closePopup" onclick="tutupPopup()">✖</span>
+        <h2>Pengumuman</h2>
+        <p>Website ini masih dalam tahap pengembangan dan dibuat menggunakan HTML.
+
+Untuk melakukan penarikan (WD) atau deposit (Depo), silakan hubungi admin melalui WhatsApp:
+📞 0822-7932-1876
+
+Terima kasih atas pengertiannya 🙏</p>
+    </div>
 </div>
 
 <div id="newsBox"></div>
@@ -294,12 +311,18 @@ let d=users.find(x=>x.username===user);
 
 profilePic.src=d.foto;
 showNews();
+
+/* 🔥 tampilkan modal */
+document.getElementById("overlay").style.display = "flex";
 }
 
 /* LOGOUT */
 function logout(){
 dashboard.style.display="none";
 loginBox.style.display="block";
+
+/* 🔥 sembunyikan modal */
+document.getElementById("overlay").style.display = "none";
 }
 
 /* HAPUS FOTO */
@@ -307,9 +330,9 @@ function hapusFoto(){
 profilePic.src="https://api.dicebear.com/7.x/avataaars/svg?seed=user";
 }
 
-/* TUTUP POPUP */
+/* TUTUP MODAL */
 function tutupPopup(){
-    document.getElementById("popupBox").style.display="none";
+    document.getElementById("overlay").style.display="none";
 }
 
 /* BERITA */
