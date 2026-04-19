@@ -25,7 +25,7 @@ body::before{
     z-index:-1;
 }
 
-/* BOX LOGIN */
+/* BOX */
 .box{
     background:#111;
     padding:25px;
@@ -57,26 +57,26 @@ button{
     margin-top:10px;
     border:none;
     border-radius:8px;
-    cursor:pointer;
     font-size:16px;
     font-weight:bold;
     background:white;
     color:black;
 }
 
-/* BUTTON KECIL */
-#logoutBtn, #profileBar button{
-    width:auto;
-    padding:5px 10px;
-    font-size:12px;
+/* TEXT LOGIN REGISTER */
+.switchText{
+    color:white;
+    margin-top:12px;
+    display:block;
+    cursor:pointer;
 }
 
 /* DASHBOARD */
 #dashboard{display:none;height:100%;}
 
-/* Sidebar */
+/* SIDEBAR */
 #sidebar{
-    width:60px;
+    width:80px;
     height:100%;
     float:left;
     background:#111;
@@ -87,27 +87,39 @@ button{
 
 /* MENU */
 .menuItem{
-    font-size:22px;
-    margin:15px 0;
+    font-size:20px;
+    margin:15px 5px;
     cursor:pointer;
     display:flex;
     flex-direction:column;
     align-items:center;
-    color:white;
-    transition:0.3s;
+    padding:8px 0;
     border-radius:10px;
-    padding:5px 0;
+    transition:0.3s;
 }
 
+/* hover */
 .menuItem:hover{
+    background:#222;
+}
+
+/* 🔥 ACTIVE */
+.menuItem.active{
     background:white;
     color:black;
+    transform:scale(1.05);
+}
+
+.menuItem span{
+    font-size:11px;
 }
 
 /* MAIN */
 #mainContent{
-    margin-left:60px;
+    margin-left:80px;
     padding:15px;
+    height:100vh;
+    overflow-y:auto;
     position:relative;
 }
 
@@ -126,11 +138,13 @@ button{
     cursor:pointer;
 }
 
-/* LOGOUT */
 #logoutBtn{
     position:absolute;
     top:10px;
     right:10px;
+    width:auto;
+    padding:5px 10px;
+    font-size:12px;
 }
 
 /* CARD */
@@ -142,9 +156,7 @@ button{
     margin-top:10px;
 }
 
-/* ======================= */
-/* MODAL */
-/* ======================= */
+/* POPUP */
 #overlay{
     position:fixed;
     top:0;
@@ -152,43 +164,30 @@ button{
     width:100%;
     height:100%;
     background:rgba(0,0,0,0.6);
-    display:none; /* 🔥 default disembunyikan */
+    display:none;
     justify-content:center;
     align-items:center;
-    z-index:100;
 }
 
 #popupBox{
     background:#111;
     width:90%;
-    max-width:400px;
-    border-radius:15px;
+    max-width:350px;
     padding:20px;
+    border-radius:15px;
     position:relative;
-    transform:scale(0.8);
-    opacity:0;
-    animation:fadeIn 0.3s forwards;
 }
 
-@keyframes fadeIn{
-    to{
-        transform:scale(1);
-        opacity:1;
-    }
-}
-
+/* tombol X */
 .closePopup{
     position:absolute;
     top:10px;
     right:15px;
     font-size:20px;
     cursor:pointer;
+    color:white;
 }
-
-#popupBox h2{margin-bottom:10px;}
-#popupBox p{color:#ccc;}
 </style>
-
 </head>
 
 <body>
@@ -196,83 +195,86 @@ button{
 <!-- LOGIN -->
 <div class="box" id="loginBox">
 <h2>Login</h2>
-<input id="loginUser" type="text" placeholder="Username">
+<input id="loginUser" placeholder="Username">
 <input id="loginPass" type="password" placeholder="Password">
 <button onclick="login()">Masuk</button>
-<p onclick="showRegister()" style="cursor:pointer;">Belum punya akun? Register</p>
+<p class="switchText" onclick="showRegister()">Belum punya akun? Register</p>
 </div>
 
 <!-- REGISTER -->
 <div class="box" id="registerBox" style="display:none;">
 <h2>Register</h2>
-<input id="regUser" type="text" placeholder="Username">
+<input id="regUser" placeholder="Username">
 <input id="regPass" type="password" placeholder="Password">
 <button onclick="register()">Daftar</button>
-<p onclick="showLogin()" style="cursor:pointer;">Sudah punya akun? Login</p>
+<p class="switchText" onclick="showLogin()">Sudah punya akun? Login</p>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard">
 
+<!-- 🔥 SIDEBAR -->
 <div id="sidebar">
-    <div onclick="showNews()" class="menuItem">
-        📰
-        <span>Berita</span>
-    </div>
-    <div onclick="showQuiz()" class="menuItem">
-        📚
-        <span>Soal</span>
-    </div>
+
+<div onclick="setActiveMenu(this); showNews()" class="menuItem active">
+📰
+<span>Berita</span>
+</div>
+
+<div onclick="setActiveMenu(this); showQuiz()" class="menuItem">
+📚
+<span>Soal</span>
+</div>
+
+<div onclick="setActiveMenu(this); showInvest()" class="menuItem">
+💰
+<span>Investasi</span>
+</div>
+
 </div>
 
 <div id="mainContent">
 
 <button id="logoutBtn" onclick="logout()">Logout</button>
 
+<!-- PROFILE -->
 <div id="profileBar">
-<img id="profilePic">
-<input type="file" id="uploadFoto" accept="image/*" style="display:none;">
+<img id="profilePic" onclick="document.getElementById('uploadFoto').click()">
+<input type="file" id="uploadFoto" accept="image/*" onchange="uploadGambar(event)" style="display:none;">
 <div>
 <p id="welcome"></p>
-<button onclick="hapusFoto()">Hapus Foto</button>
 </div>
 </div>
 
-<!-- 🔥 MODAL -->
+<!-- POPUP -->
 <div id="overlay">
-    <div id="popupBox">
-        <span class="closePopup" onclick="tutupPopup()">✖</span>
-        <h2>Pengumuman</h2>
-        <p>Website ini masih dalam tahap pengembangan dan dibuat menggunakan HTML.
-
-Untuk melakukan penarikan (WD) atau deposit (Depo), silakan hubungi admin melalui WhatsApp:
-📞 0822-7932-1876
-
-Terima kasih atas pengertiannya 🙏</p>
-    </div>
+<div id="popupBox">
+<span class="closePopup" onclick="tutupPopup()">✖</span>
+<h3>Pengumuman</h3>
+<p>Website masih pengembangan</p>
+</div>
 </div>
 
 <div id="newsBox"></div>
 <div id="quizBox" style="display:none;"></div>
+<div id="investBox" style="display:none;"></div>
 
 </div>
 </div>
 
 <script>
-window.onload = () => {
-    loginBox.style.display = "block";
-    profilePic.onclick = () => uploadFoto.click();
-};
+window.onload=()=>{loginBox.style.display="block";};
+
+/* ACTIVE MENU */
+function setActiveMenu(el){
+let menus=document.querySelectorAll(".menuItem");
+menus.forEach(m=>m.classList.remove("active"));
+el.classList.add("active");
+}
 
 /* SWITCH */
-function showRegister(){
-    loginBox.style.display="none";
-    registerBox.style.display="block";
-}
-function showLogin(){
-    registerBox.style.display="none";
-    loginBox.style.display="block";
-}
+function showRegister(){loginBox.style.display="none";registerBox.style.display="block";}
+function showLogin(){registerBox.style.display="none";loginBox.style.display="block";}
 
 /* REGISTER */
 function register(){
@@ -280,9 +282,8 @@ let u=regUser.value,p=regPass.value;
 if(!u||!p)return alert("Isi semua!");
 
 let users=JSON.parse(localStorage.getItem("users"))||[];
-users.push({username:u,password:p,foto:"https://api.dicebear.com/7.x/avataaars/svg?seed="+u});
+users.push({username:u,password:p});
 localStorage.setItem("users",JSON.stringify(users));
-
 alert("Berhasil!");
 showLogin();
 }
@@ -309,57 +310,69 @@ welcome.innerText="Halo "+user;
 let users=JSON.parse(localStorage.getItem("users"))||[];
 let d=users.find(x=>x.username===user);
 
+if(d && d.foto){
 profilePic.src=d.foto;
-showNews();
+}else{
+profilePic.src="https://api.dicebear.com/7.x/avataaars/svg?seed="+user;
+}
 
-/* 🔥 tampilkan modal */
-document.getElementById("overlay").style.display = "flex";
+showNews();
+overlay.style.display="flex";
+}
+
+/* UPLOAD FOTO */
+function uploadGambar(e){
+let file=e.target.files[0];
+if(!file)return;
+
+let reader=new FileReader();
+reader.onload=function(ev){
+let foto=ev.target.result;
+
+profilePic.src=foto;
+
+let users=JSON.parse(localStorage.getItem("users"))||[];
+let user=welcome.innerText.replace("Halo ","");
+let i=users.findIndex(x=>x.username===user);
+
+if(i!=-1){
+users[i].foto=foto;
+localStorage.setItem("users",JSON.stringify(users));
+}
+};
+reader.readAsDataURL(file);
 }
 
 /* LOGOUT */
 function logout(){
 dashboard.style.display="none";
 loginBox.style.display="block";
-
-/* 🔥 sembunyikan modal */
-document.getElementById("overlay").style.display = "none";
+overlay.style.display="none";
 }
 
-/* HAPUS FOTO */
-function hapusFoto(){
-profilePic.src="https://api.dicebear.com/7.x/avataaars/svg?seed=user";
-}
+/* POPUP */
+function tutupPopup(){overlay.style.display="none";}
 
-/* TUTUP MODAL */
-function tutupPopup(){
-    document.getElementById("overlay").style.display="none";
-}
-
-/* BERITA */
+/* MENU */
 function showNews(){
 quizBox.style.display="none";
+investBox.style.display="none";
 newsBox.style.display="block";
-
-let data=[
-{judul:"AI 2026",isi:"Semakin canggih"},
-{judul:"Cuaca",isi:"Hujan deras"}
-];
-
-newsBox.innerHTML="";
-data.forEach(d=>{
-newsBox.innerHTML += `
-<div class="card">
-<h4>${d.judul}</h4>
-<p>${d.isi}</p>
-</div>
-`;
-});
+newsBox.innerHTML="<div class='card'>Berita</div>";
 }
 
 function showQuiz(){
 newsBox.style.display="none";
+investBox.style.display="none";
 quizBox.style.display="block";
-quizBox.innerHTML="<h3>Soal</h3>";
+quizBox.innerHTML="<div class='card'>Soal</div>";
+}
+
+function showInvest(){
+newsBox.style.display="none";
+quizBox.style.display="none";
+investBox.style.display="block";
+investBox.innerHTML="<div class='card'>Investasi</div>";
 }
 </script>
 
